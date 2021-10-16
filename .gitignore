@@ -1,0 +1,15 @@
+# IntelliJ
+
+/.idea/dictionaries/
+/.idea/libraries/
+/.idea/*.xml
+*.iml
+
+# Gradle
+
+.gradle
+build/
+
+# Server
+working/*
+!working/server.properties
