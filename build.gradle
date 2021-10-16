@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group 'de.tammo'
+group 'de.phibsy'
 version '1.0'
 
 sourceCompatibility = 1.8
@@ -29,18 +29,29 @@ repositories {
     }
 
     //Add your repositories here
+
+    maven { url 'https://repo.cloudnetservice.eu/repository/releases/' }
+    maven {
+        name = 'Placeholder API'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 ext {
     //Define one of the supported mc versions
-    mcVersion = '1.14.4'
+    mcVersion = '1.16.5'
+    VERSION = '3.4.0-RELEASE' // Cloudnet Version
 }
 
 dependencies {
     //Adds the spigot api to your plugin
-    compileOnly "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
+    compileOnly group: "org.spigotmc", name: "spigot-api", version: "${mcVersion}-R0.1-SNAPSHOT"
 
     //Add your dependencies here
+    implementation "de.dytanic.cloudnet:cloudnet-wrapper-jvm:${VERSION}"
+    implementation "de.dytanic.cloudnet:cloudnet-bridge:${VERSION}"
+    implementation group: "me.clip", name: "placeholderapi", version: "2.10.10"
+
 }
 
 shadowJar {
@@ -72,7 +83,7 @@ task setupServer {
     group 'server'
     description 'Downloads the server jar'
 
-    def server = new File('working/server.jar')
+    def server = new File("${projectDir}/working/server.jar")
 
     if (server.exists()) {
         server.delete()
@@ -94,6 +105,10 @@ task setupServer {
 
         case '1.14.4':
             url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
+            break
+
+        case '1.16.5':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar'
             break
     }
 
