@@ -3,6 +3,7 @@ package de.phibsy.cloudnet.PAPI;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public class CloudnetExpansion extends PlaceholderExpansion {
@@ -25,7 +26,7 @@ public class CloudnetExpansion extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0";
+        return "1.2";
     }
 
     @Override
@@ -35,6 +36,12 @@ public class CloudnetExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
+        if(params.length() > 8) {
+            if(params.startsWith("taskcount_")) {
+                String name = params.substring(10);
+                return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name);
+            }
+        }
         switch (params) {
             case "servername":
                 return cloudnetPAPI.getServername();
