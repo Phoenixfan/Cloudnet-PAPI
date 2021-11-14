@@ -4,3 +4,7 @@ version: ${version}
 author: ${author}
 
 main: ${main}
+
+softdepend:
+  - "PlaceholderAPI"
+  - "Cloudnet-Bridge"

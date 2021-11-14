@@ -1,5 +1,6 @@
 package de.phibsy.cloudnet.PAPI;
 
+import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -39,6 +40,8 @@ public class CloudnetExpansion extends PlaceholderExpansion {
                 return cloudnetPAPI.getServername();
             case "state":
                 return BukkitCloudNetHelper.getState();
+            case "taskcount":
+                return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
         }
         return null;
     }
