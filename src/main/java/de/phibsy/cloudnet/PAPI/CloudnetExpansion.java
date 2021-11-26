@@ -38,17 +38,19 @@ public class CloudnetExpansion extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if(params.length() > 8) {
             if(params.startsWith("taskcount_")) {
-                String name = params.substring(10);
-                return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name);
+                return "Many people";
+                //String name = params.substring(10);
+                //return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name);
             }
         }
         switch (params) {
             case "servername":
                 return cloudnetPAPI.getServername();
             case "state":
-                return BukkitCloudNetHelper.getState();
+                //return BukkitCloudNetHelper.getState();
             case "taskcount":
-                return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
+                return "Many people";
+                //return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
         }
         return null;
     }
