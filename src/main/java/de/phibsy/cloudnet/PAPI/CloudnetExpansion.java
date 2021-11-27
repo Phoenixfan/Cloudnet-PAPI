@@ -1,10 +1,10 @@
 package de.phibsy.cloudnet.PAPI;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
+import java.util.concurrent.ExecutionException;
+
 import org.bukkit.OfflinePlayer;
+
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class CloudnetExpansion extends PlaceholderExpansion {
 
@@ -38,9 +38,13 @@ public class CloudnetExpansion extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if(params.length() > 8) {
             if(params.startsWith("taskcount_")) {
-                return "Many people";
-                //String name = params.substring(10);
-                //return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name);
+                //return "Many people";
+                String name = params.substring(10);
+                try {
+                    return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
         switch (params) {
@@ -49,8 +53,8 @@ public class CloudnetExpansion extends PlaceholderExpansion {
             case "state":
                 //return BukkitCloudNetHelper.getState();
             case "taskcount":
-                return "Many people";
-                //return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
+                //return "Many people";
+                return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
         }
         return null;
     }
