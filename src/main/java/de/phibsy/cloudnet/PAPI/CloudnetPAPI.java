@@ -1,13 +1,17 @@
 package de.phibsy.cloudnet.PAPI;
 
-import de.dytanic.cloudnet.wrapper.Wrapper;
+import dev.derklaro.aerogel.Inject;
+import eu.cloudnetservice.wrapper.configuration.WrapperConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CloudnetPAPI extends JavaPlugin {
 
-    private String servername = "";
+    private String serverName;
     private TaskWatcher taskWatcher;
+
+    @Inject
+    private WrapperConfiguration wrapperConfiguration;
 
     @Override
     public void onEnable() {
@@ -16,12 +20,12 @@ public class CloudnetPAPI extends JavaPlugin {
             this.setEnabled(false);
         }
         this.taskWatcher = new TaskWatcher();
-        this.servername = Wrapper.getInstance().getServiceId().getName();
+        this.serverName = wrapperConfiguration.serviceConfiguration().serviceId().name();
         new CloudnetExpansion(this).register();
     }
 
-    public String getServername() {
-        return this.servername;
+    public String getServerName() {
+        return this.serverName;
     }
 
     public TaskWatcher getTaskWatcher() {

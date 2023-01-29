@@ -5,27 +5,28 @@ import java.util.concurrent.ExecutionException;
 import org.bukkit.OfflinePlayer;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.jetbrains.annotations.NotNull;
 
 public class CloudnetExpansion extends PlaceholderExpansion {
 
-    private CloudnetPAPI cloudnetPAPI;
+    private final CloudnetPAPI cloudnetPAPI;
 
     public CloudnetExpansion(CloudnetPAPI cloudnetPAPI) {
         this.cloudnetPAPI = cloudnetPAPI;
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "cloudnet";
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "Phibsy";
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return "1.2";
     }
 
@@ -38,7 +39,6 @@ public class CloudnetExpansion extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if(params.length() > 8) {
             if(params.startsWith("taskcount_")) {
-                //return "Many people";
                 String name = params.substring(10);
                 try {
                     return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name).get();
@@ -49,11 +49,8 @@ public class CloudnetExpansion extends PlaceholderExpansion {
         }
         switch (params) {
             case "servername":
-                return cloudnetPAPI.getServername();
-            case "state":
-                //return BukkitCloudNetHelper.getState();
+                return cloudnetPAPI.getServerName();
             case "taskcount":
-                //return "Many people";
                 return "" + cloudnetPAPI.getTaskWatcher().getTaskCount();
         }
         return null;

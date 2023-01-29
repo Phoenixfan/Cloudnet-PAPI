@@ -1,5 +1,11 @@
 package de.phibsy.cloudnet.PAPI;
 
+import dev.derklaro.aerogel.Inject;
+import eu.cloudnetservice.driver.provider.CloudServiceProvider;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
+import eu.cloudnetservice.modules.bridge.BridgeServiceProperties;
+import eu.cloudnetservice.wrapper.configuration.WrapperConfiguration;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
@@ -8,19 +14,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
-import de.dytanic.cloudnet.ext.bridge.BridgeServiceProperty;
-import de.dytanic.cloudnet.wrapper.Wrapper;
 
 public class TaskWatcher {
-    private String taskName;
+    @Inject
+    private CloudServiceProvider cloudServiceProvider;
+    @Inject
+    private WrapperConfiguration wrapperConfiguration;
+    private final String taskName;
     private volatile int taskCount = 0;
-    private ConcurrentHashMap<String, Pair<Integer, Long>> concurrentHashMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Pair<Integer, Long>> concurrentHashMap = new ConcurrentHashMap<>();
     private final ExecutorService pool = Executors.newFixedThreadPool(2);
 
     public TaskWatcher() {
-        this.taskName = Wrapper.getInstance().getServiceId().getTaskName();
+        this.taskName = wrapperConfiguration.serviceConfiguration().serviceId().taskName();
         Timer timer = new Timer();
         timer.schedule(
         new TimerTask() {
@@ -32,7 +38,7 @@ public class TaskWatcher {
     }
 
     private boolean isTask(ServiceInfoSnapshot serviceInfoSnapshot, String name) {
-        return serviceInfoSnapshot.getServiceId().getTaskName().equalsIgnoreCase(name);
+        return serviceInfoSnapshot.serviceId().taskName().equalsIgnoreCase(name);
     }
 
     public int getTaskCount() {
@@ -46,10 +52,10 @@ public class TaskWatcher {
             if (pair != null && System.currentTimeMillis() - pair.getLeft() < 20000) {
                 future.complete(pair.getRight());
             } else {
-                int i = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServices()
+                int i = cloudServiceProvider.services()
                         .stream()
                         .filter(serviceInfoSnapshot -> this.isTask(serviceInfoSnapshot, name))
-                        .mapToInt(v -> v.getProperty(BridgeServiceProperty.ONLINE_COUNT).orElse(0))
+                        .mapToInt(v -> v.property(BridgeServiceProperties.ONLINE_COUNT))
                         .sum();
                 concurrentHashMap.put(name, Pair.of(i, System.currentTimeMillis()));
                 future.complete(i);
@@ -60,10 +66,10 @@ public class TaskWatcher {
 
     private void supplyTaskCount() {
         pool.submit(() -> {
-            taskCount = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServices()
+            taskCount = cloudServiceProvider.services()
                     .stream()
                     .filter(serviceInfoSnapshot -> this.isTask(serviceInfoSnapshot, taskName))
-                    .mapToInt(v -> v.getProperty(BridgeServiceProperty.ONLINE_COUNT).orElse(0))
+                    .mapToInt(v -> v.property(BridgeServiceProperties.ONLINE_COUNT))
                     .sum();
         });
     }
