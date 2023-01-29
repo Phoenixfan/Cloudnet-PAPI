@@ -6,8 +6,8 @@ plugins {
 group 'de.phibsy'
 version '1.2'
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -24,7 +24,7 @@ repositories {
 
 ext {
     spigotVersion = '1.17.1-R0.1-SNAPSHOT'
-    cloudNetVersion = '4.0.0-RC6'
+    cloudNetVersion = '4.0.0-RC7'
     placeholderApiVersion = '2.11.2'
 }
 
@@ -34,10 +34,6 @@ dependencies {
     compileOnly "eu.cloudnetservice.cloudnet:bridge:${cloudNetVersion}"
     compileOnly "eu.cloudnetservice.cloudnet:driver:${cloudNetVersion}"
     compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
-}
-
-shadowJar {
-    classifier = ''
 }
 
 processResources {
