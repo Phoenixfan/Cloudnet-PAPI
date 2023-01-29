@@ -16,42 +16,24 @@ archivesBaseName = project.property("pluginName")
 repositories {
     mavenCentral()
 
-    //Added spigot repository
-    maven {
-        name = 'Spigot'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-
-    //Added md5's repository to add the missing Bungeecord-Chat api
-    maven {
-        name = 'Bungeecord-Chat'
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-
-    //Add your repositories here
-
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://repo.cloudnetservice.eu/repository/releases/' }
-    maven {
-        name = 'Placeholder API'
-        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 ext {
-    //Define one of the supported mc versions
-    mcVersion = '1.16.5'
-    VERSION = '3.4.0-RELEASE' // Cloudnet Version
+    spigotVersion = '1.17.1-R0.1-SNAPSHOT'
+    cloudNetVersion = '4.0.0-RC6'
+    placeholderApiVersion = '2.11.2'
 }
 
 dependencies {
-    //Adds the spigot api to your plugin
-    compileOnly group: "org.spigotmc", name: "spigot-api", version: "${mcVersion}-R0.1-SNAPSHOT"
-
-    //Add your dependencies here
-    compileOnly "de.dytanic.cloudnet:cloudnet-wrapper-jvm:${VERSION}"
-    compileOnly "de.dytanic.cloudnet:cloudnet-bridge:${VERSION}"
-    compileOnly group: "me.clip", name: "placeholderapi", version: "2.10.10"
-
+    compileOnly "org.spigotmc:spigot-api:${spigotVersion}"
+    compileOnly "eu.cloudnetservice.cloudnet:wrapper-jvm:${cloudNetVersion}"
+    compileOnly "eu.cloudnetservice.cloudnet:bridge:${cloudNetVersion}"
+    compileOnly "eu.cloudnetservice.cloudnet:driver:${cloudNetVersion}"
+    compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
 }
 
 shadowJar {
@@ -61,60 +43,4 @@ shadowJar {
 processResources {
     project.properties.put("version", this.version)
     expand project.properties
-}
-
-task cleanPlugin() {
-    group 'deploy'
-    description 'Cleans the plugin in the working directory up'
-    delete 'working/plugins/' + project.property("pluginName") + '-' + project.version.toString() + '.jar'
-}
-
-task deploy(type: Copy, dependsOn: ['cleanPlugin', 'jar']) {
-    group 'deploy'
-    description 'Exports you plugin to the plugin directory in your test server'
-
-    def pluginFolder = project.property('pluginFolder').toString()
-
-    from shadowJar
-    into pluginFolder.isEmpty() ? 'working/plugins' : pluginFolder
-}
-
-task setupServer {
-    group 'server'
-    description 'Downloads the server jar'
-
-    def server = new File("${projectDir}/working/server.jar")
-
-    if (server.exists()) {
-        server.delete()
-    }
-
-    def url = ''
-    switch (mcVersion) {
-        case '1.8.8':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
-            break
-
-        case '1.12.2':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar'
-            break
-
-        case '1.13.2':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.13.2.jar'
-            break
-
-        case '1.14.4':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
-            break
-
-        case '1.16.5':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar'
-            break
-    }
-
-    if (url.isEmpty()) {
-        throw new GradleException('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2]!')
-    }
-
-    new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
 }
