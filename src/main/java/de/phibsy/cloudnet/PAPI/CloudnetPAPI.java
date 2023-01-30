@@ -1,6 +1,6 @@
 package de.phibsy.cloudnet.PAPI;
 
-import dev.derklaro.aerogel.Inject;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.wrapper.configuration.WrapperConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,8 +10,7 @@ public class CloudnetPAPI extends JavaPlugin {
     private String serverName;
     private TaskWatcher taskWatcher;
 
-    @Inject
-    private WrapperConfiguration wrapperConfiguration;
+    private final WrapperConfiguration wrapperConfiguration = InjectionLayer.ext().instance(WrapperConfiguration.class);
 
     @Override
     public void onEnable() {

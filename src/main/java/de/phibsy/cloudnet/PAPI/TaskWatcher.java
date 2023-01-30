@@ -1,6 +1,6 @@
 package de.phibsy.cloudnet.PAPI;
 
-import dev.derklaro.aerogel.Inject;
+import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceProvider;
 import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import eu.cloudnetservice.modules.bridge.BridgeServiceProperties;
@@ -16,16 +16,14 @@ import java.util.concurrent.Future;
 
 
 public class TaskWatcher {
-    @Inject
-    private CloudServiceProvider cloudServiceProvider;
-    @Inject
-    private WrapperConfiguration wrapperConfiguration;
+    private final CloudServiceProvider cloudServiceProvider = InjectionLayer.ext().instance(CloudServiceProvider.class);
     private final String taskName;
     private volatile int taskCount = 0;
     private final ConcurrentHashMap<String, Pair<Integer, Long>> concurrentHashMap = new ConcurrentHashMap<>();
     private final ExecutorService pool = Executors.newFixedThreadPool(2);
 
     public TaskWatcher() {
+        WrapperConfiguration wrapperConfiguration = InjectionLayer.ext().instance(WrapperConfiguration.class);
         this.taskName = wrapperConfiguration.serviceConfiguration().serviceId().taskName();
         Timer timer = new Timer();
         timer.schedule(
