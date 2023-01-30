@@ -37,8 +37,8 @@ public class CloudnetExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-        if(params.length() > 8) {
-            if(params.startsWith("taskcount_")) {
+        if (params.length() > 8) {
+            if (params.startsWith("taskcount_")) {
                 String name = params.substring(10);
                 try {
                     return "" + cloudnetPAPI.getTaskWatcher().getTaskCount(name).get();
